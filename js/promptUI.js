@@ -1,4 +1,4 @@
-export function createPromptElement({ prompt, parentElement, parentData, treeData, getAlertSuppression, onSave }) {
+export function createPromptElement({ prompt, parentElement, parentData, treeData, getAlertSuppression, onSave, isSearchResult, onJump }) {
     const wrapper = document.createElement('div');
     wrapper.className = 'prompt-wrapper';
     wrapper.dataset.id = prompt.id;
@@ -52,8 +52,9 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
     content.style.width = '100%';
     content.style.height = '100px';
     content.readOnly = true;
-    content.style.backgroundColor = '#808080';
+    content.style.backgroundColor = '#383838';
     content.style.cursor = 'pointer';
+    content.style.borderColor = 'transparent';
 
     // Edit button
     const editBtn = document.createElement('button');
@@ -70,9 +71,16 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
     deleteBtn.className = 'pi pi-trash';
     deleteBtn.style.color = '#d63820';
 
+    // Paste button
+    const pasteBtn = document.createElement('button');
+    pasteBtn.style.position = 'absolute';
+    pasteBtn.style.top = '5px';
+    pasteBtn.style.right = '80px';  // Adjusted position
+    pasteBtn.className = 'pi pi-clipboard';
+
     // Color change helper
     const matchColor = () => {
-        content.style.backgroundColor = content.readOnly ? '#808080' : 'black';
+        content.style.backgroundColor = content.readOnly ? '#383838' : 'black';
     };
 
     // Event handlers
@@ -108,7 +116,7 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
                 prompt.content = content.value;
                 onSave();
             }
-        }, 100);
+        }, 200);
     });
 
     // Exit edit mode on escape key
@@ -144,10 +152,48 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
         }
     });
 
+    // PASTE FUNCTIONALITY
+    pasteBtn.addEventListener('click', async () => {
+        try {
+            const clipboardText = await navigator.clipboard.readText();
+            content.value = clipboardText;
+            prompt.content = clipboardText;
+            onSave();
+            
+            // Visual feedback
+            content.style.backgroundColor = '#548f64';
+            setTimeout(() => {
+                if (content.readOnly) {
+                    content.style.backgroundColor = '#383838';
+                } else {
+                    content.style.backgroundColor = 'black';
+                }
+            }, 500);
+        } catch (error) {
+            console.error('Failed to read clipboard:', error);
+            alert('Failed to access clipboard. Make sure you have granted permission.');
+        }
+    });
+
+    // Jump functionality for search results
+    if (onJump) {
+        wrapper.addEventListener('click', (e) => {
+            // Only trigger if not clicking on interactive elements
+            if (!e.target.matches('button') && 
+                !e.target.matches('input') && 
+                !e.target.matches('textarea')) {
+                onJump();
+            }
+        });
+        wrapper.style.cursor = 'pointer';
+        wrapper.style.backgroundColor = '#2a2a4a';
+    }
+
     // Assemble elements
     wrapper.appendChild(title);
     wrapper.appendChild(content);
     wrapper.appendChild(editBtn);
     wrapper.appendChild(deleteBtn);
+    wrapper.appendChild(pasteBtn);
     parentElement.appendChild(wrapper);
 }
