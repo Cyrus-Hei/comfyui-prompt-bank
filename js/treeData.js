@@ -8,6 +8,19 @@ export class TreeData {
         if (savedData) {
             try {
                 this.data = JSON.parse(savedData);
+                
+                // Add expanded property to existing presets
+                const traverse = (nodes) => {
+                    nodes.forEach(node => {
+                        if (node.type === 'preset') {
+                            if (node.expanded === undefined) {
+                                node.expanded = true;
+                            }
+                            traverse(node.children);
+                        }
+                    });
+                };
+                traverse(this.data);
             } catch (e) {
                 console.error('Error loading prompt bank data:', e);
                 this.data = [];
@@ -27,7 +40,8 @@ export class TreeData {
             id: Date.now().toString(),
             type: 'preset',
             title: 'New Preset',
-            children: []
+            children: [],
+            expanded: true  // Add expanded state
         };
         this.data.push(newPreset);
         return newPreset;
@@ -49,7 +63,8 @@ export class TreeData {
             id: Date.now().toString(),
             type: 'preset',
             title: 'New Preset',
-            children: []
+            children: [],
+            expanded: true  // Add expanded state
         };
         parent.children.push(newPreset);
         return newPreset;

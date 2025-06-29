@@ -108,8 +108,44 @@ export class TreeRenderer {
         this.container.appendChild(this.treeContainer);
     }
 
+    focusNode(id) {
+        this.focusNodeId = id;
+        this.searchTerm = '';
+        this.searchInput.value = '';
+        this.renderTree();
+    }
+
+    getAncestors(targetId) {
+        const find = (nodes, targetId, path) => {
+            for (const node of nodes) {
+                const currentPath = [...path, node];
+                if (node.id === targetId) {
+                    return currentPath;
+                }
+                if (node.type === 'preset' && node.children) {
+                    const found = find(node.children, targetId, currentPath);
+                    if (found) return found;
+                }
+            }
+            return null;
+        };
+        return find(this.treeData.data, targetId, []);
+    }
+
     renderTree() {
         this.treeContainer.innerHTML = '';
+
+        // Focus node logic
+        if (this.focusNodeId) {
+            const ancestors = this.getAncestors(this.focusNodeId);
+            if (ancestors) {
+                ancestors.forEach(node => {
+                    if (node.type === 'preset') {
+                        node.expanded = true;
+                    }
+                });
+            }
+        }
         
         // If we have a search term, filter the tree
         if (this.searchTerm) {
@@ -140,6 +176,21 @@ export class TreeRenderer {
                     this.renderPrompt(item, this.treeContainer, null);
                 }
             });
+        }
+
+        // After rendering, scroll to focused node
+        if (this.focusNodeId) {
+            setTimeout(() => {
+                const element = this.treeContainer.querySelector(`[data-id="${this.focusNodeId}"]`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    element.style.backgroundColor = '#3a3a6a';
+                    setTimeout(() => {
+                        element.style.backgroundColor = '';
+                    }, 3000);
+                }
+                this.focusNodeId = null;
+            }, 100);
         }
     }
 
@@ -182,6 +233,7 @@ export class TreeRenderer {
     }
 
     renderPreset(preset, parentElement, parentData) {
+        const isSearchResult = !!this.searchTerm;
         // Create children container
         const childrenContainer = document.createElement('div');
         childrenContainer.className = 'preset-children';
@@ -201,18 +253,42 @@ export class TreeRenderer {
                 } else {
                     this.renderPrompt(child, childrenContainer, preset);
                 }
-            }
+            },
+            isSearchResult,
+            onJump: isSearchResult ? () => this.focusNode(preset.id) : null
         });
     }
 
     renderPrompt(prompt, parentElement, parentData) {
+        const isSearchResult = !!this.searchTerm;
+
         createPromptElement({
             prompt,
             parentElement,
             parentData,
             treeData: this.treeData,
             getAlertSuppression: () => this.alertSuppression, // Pass getter function
-            onSave: () => this.treeData.save()
+            onSave: () => this.treeData.save(),
+            isSearchResult,
+            onJump: isSearchResult ? () => {
+                // Find parent preset for prompt
+                const findParent = (nodes, targetId) => {
+                    for (const node of nodes) {
+                        if (node.type === 'preset' && node.children) {
+                            const childMatch = node.children.find(c => c.id === targetId);
+                            if (childMatch) return node;
+                            const found = findParent(node.children, targetId);
+                            if (found) return found;
+                        }
+                    }
+                    return null;
+                };
+                
+                const parent = findParent(this.treeData.data, prompt.id);
+                if (parent) {
+                    this.focusNode(parent.id);
+                }
+            } : null
         });
     }
 }

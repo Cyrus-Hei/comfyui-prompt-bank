@@ -1,4 +1,4 @@
-export function createPresetElement({ preset, parentElement, parentData, childrenContainer, treeData, getAlertSuppression, onSave, onAddChild }) {
+export function createPresetElement({ preset, parentElement, parentData, childrenContainer, treeData, getAlertSuppression, onSave, onAddChild, isSearchResult, onJump }) {
     const presetElement = document.createElement('div');
     presetElement.className = 'preset-wrapper';
     presetElement.dataset.id = preset.id;
@@ -16,8 +16,8 @@ export function createPresetElement({ preset, parentElement, parentData, childre
     title.value = preset.title;
     title.style.position = 'absolute';
     title.style.top = '5px';
-    title.style.left = '10px';
-    title.style.width = '60%';
+    title.style.left = '27px';
+    title.style.width = '50%';
     title.style.height = '25px';
     title.style.backgroundColor = 'transparent';
     title.style.borderColor = 'transparent';
@@ -46,6 +46,28 @@ export function createPresetElement({ preset, parentElement, parentData, childre
         if (ev.key === 'Escape') {
             title.blur();
         }
+    });
+
+    // Add expand/collapse button
+    const expandBtn = document.createElement('button');
+    expandBtn.textContent = preset.expanded ? '▼' : '▶';
+    expandBtn.style.position = 'absolute';
+    expandBtn.style.top = '5px';
+    expandBtn.style.left = '5px';
+    expandBtn.style.width = '20px';
+    expandBtn.style.height = '20px';
+    expandBtn.style.fontSize = '0.8em';
+    expandBtn.style.padding = '0';
+    
+    // Set children visibility
+    childrenContainer.style.display = preset.expanded ? 'block' : 'none';
+    
+    expandBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        preset.expanded = !preset.expanded;
+        expandBtn.textContent = preset.expanded ? '▼' : '▶';
+        childrenContainer.style.display = preset.expanded ? 'block' : 'none';
+        onSave();
     });
 
     // Add child preset button
@@ -98,7 +120,23 @@ export function createPresetElement({ preset, parentElement, parentData, childre
         }
     });
 
+    // Add jump functionality for search results
+    if (onJump) {
+        presetElement.addEventListener('click', (e) => {
+            // Only trigger if not clicking on interactive elements
+            if (!e.target.matches('button') && 
+                !e.target.matches('input') && 
+                !e.target.matches('textarea')) {
+                onJump();
+            }
+        });
+        presetElement.style.cursor = 'pointer';
+        presetElement.style.backgroundColor = '#2a2a4a';
+    }
+
+
     // Assemble elements
+    presetElement.appendChild(expandBtn);
     presetElement.appendChild(title);
     presetElement.appendChild(addChildPreset);
     presetElement.appendChild(addChildPrompt);

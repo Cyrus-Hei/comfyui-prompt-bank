@@ -1,4 +1,4 @@
-export function createPromptElement({ prompt, parentElement, parentData, treeData, getAlertSuppression, onSave }) {
+export function createPromptElement({ prompt, parentElement, parentData, treeData, getAlertSuppression, onSave, isSearchResult, onJump }) {
     const wrapper = document.createElement('div');
     wrapper.className = 'prompt-wrapper';
     wrapper.dataset.id = prompt.id;
@@ -143,6 +143,20 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
             }
         }
     });
+
+    // Add jump functionality for search results
+    if (onJump) {
+        wrapper.addEventListener('click', (e) => {
+            // Only trigger if not clicking on interactive elements
+            if (!e.target.matches('button') && 
+                !e.target.matches('input') && 
+                !e.target.matches('textarea')) {
+                onJump();
+            }
+        });
+        wrapper.style.cursor = 'pointer';
+        wrapper.style.backgroundColor = '#2a2a4a';
+    }
 
     // Assemble elements
     wrapper.appendChild(title);
