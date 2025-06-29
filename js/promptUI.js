@@ -52,8 +52,9 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
     content.style.width = '100%';
     content.style.height = '100px';
     content.readOnly = true;
-    content.style.backgroundColor = '#808080';
+    content.style.backgroundColor = '#383838';
     content.style.cursor = 'pointer';
+    content.style.borderColor = 'transparent';
 
     // Edit button
     const editBtn = document.createElement('button');
@@ -79,7 +80,7 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
 
     // Color change helper
     const matchColor = () => {
-        content.style.backgroundColor = content.readOnly ? '#808080' : 'black';
+        content.style.backgroundColor = content.readOnly ? '#383838' : 'black';
     };
 
     // Event handlers
@@ -115,7 +116,7 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
                 prompt.content = content.value;
                 onSave();
             }
-        }, 100);
+        }, 200);
     });
 
     // Exit edit mode on escape key
@@ -163,7 +164,7 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
             content.style.backgroundColor = '#548f64';
             setTimeout(() => {
                 if (content.readOnly) {
-                    content.style.backgroundColor = '#808080';
+                    content.style.backgroundColor = '#383838';
                 } else {
                     content.style.backgroundColor = 'black';
                 }
