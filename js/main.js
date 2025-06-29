@@ -88,13 +88,14 @@ app.extensionManager.registerSidebarTab({
       const presetElement = document.createElement('div');
       presetElement.className = 'preset-wrapper';
       presetElement.dataset.id = preset.id;
-      presetElement.style.marginBottom = '15px';
+      presetElement.style.marginBottom = '0px';
       presetElement.style.border = '1px solid #ccc';
       presetElement.style.padding = '10px';
       presetElement.style.paddingTop = '35px';
+      presetElement.style.paddingRight = '0px';
+      presetElement.style.paddingBottom = '0px';
       presetElement.style.borderRadius = '5px';
       presetElement.style.position = 'relative';
-      presetElement.style.marginLeft = '20px';
 
       // Preset title
       const title = document.createElement('input');
@@ -107,12 +108,28 @@ app.extensionManager.registerSidebarTab({
       title.style.backgroundColor = 'transparent';
       title.style.borderColor = 'transparent';
       title.style.color = 'white';
-      title.style.cursor = 'text';
-      title.contentEditable = true;
+      title.style.cursor = 'pointer';
+      title.readOnly = true;
       
+      // Edit on double click
+      title.addEventListener('dblclick', () => {
+        title.style.cursor = 'text';
+        title.readOnly = false;
+      })
+
+      // Exit edit on focus lost
       title.addEventListener('blur', () => {
+        title.style.cursor = 'pointer';
+        title.readOnly = true;
         preset.title = title.value;
         saveTreeData();
+      });
+
+      // Exit edit on escape key
+      title.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') {
+          title.blur();
+        }
       });
 
       // Add child preset button
@@ -120,7 +137,7 @@ app.extensionManager.registerSidebarTab({
       addChildPreset.textContent = '+ Preset';
       addChildPreset.style.position = 'absolute';
       addChildPreset.style.top = '5px';
-      addChildPreset.style.right = '160px';
+      addChildPreset.style.right = '115px';
       addChildPreset.style.fontSize = '0.8em';
 
       // Add child prompt button
@@ -128,7 +145,7 @@ app.extensionManager.registerSidebarTab({
       addChildPrompt.textContent = '+ Prompt';
       addChildPrompt.style.position = 'absolute';
       addChildPrompt.style.top = '5px';
-      addChildPrompt.style.right = '80px';
+      addChildPrompt.style.right = '45px';
       addChildPrompt.style.fontSize = '0.8em';
 
       // Delete button
@@ -207,13 +224,12 @@ app.extensionManager.registerSidebarTab({
       const wrapper = document.createElement('div');
       wrapper.className = 'prompt-wrapper';
       wrapper.dataset.id = prompt.id;
-      wrapper.style.marginBottom = '15px';
+      wrapper.style.marginBottom = '0px';
       wrapper.style.border = '1px solid #ccc';
       wrapper.style.padding = '10px';
       wrapper.style.paddingTop = '35px';
       wrapper.style.borderRadius = '5px';
       wrapper.style.position = 'relative';
-      wrapper.style.marginLeft = '20px';
 
       // Prompt title
       const title = document.createElement('input');
@@ -229,10 +245,25 @@ app.extensionManager.registerSidebarTab({
       title.style.cursor = 'text';
       title.contentEditable = true;
       
-      // Exit edit mode and save on blur (title)
+      // Edit on double click
+      title.addEventListener('dblclick', () => {
+        title.style.cursor = 'text';
+        title.readOnly = false;
+      })
+
+      // Exit edit on focus lost
       title.addEventListener('blur', () => {
-        prompt.title = title.value;
+        title.style.cursor = 'pointer';
+        title.readOnly = true;
+        preset.title = title.value;
         saveTreeData();
+      });
+
+      // Exit edit on escape key
+      title.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') {
+          title.blur();
+        }
       });
 
       // Prompt content
