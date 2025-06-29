@@ -3,13 +3,11 @@ name = "comfyui-prompt-bank"
 description = "A prompt manager on the sidebar for ComfyUI, allowing easy saving and copying of prompts. "
 version = "0.0.1"
 license = { file = "LICENSE" }
-dependencies = [""]
 
 [project.urls]
 Repository = "https://github.com/Cyrus-Hei/comfyui-prompt-bank"
-#  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = "Cyrus-Hei"
+PublisherId = "cyrus-hei"
 DisplayName = "comfyui-prompt-bank"
 Icon = ""
