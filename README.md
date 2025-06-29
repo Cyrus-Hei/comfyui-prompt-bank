@@ -9,8 +9,11 @@ ComfyUI Prompt Bank is a ComfyUI extension to add a prompt bank to the sidebar o
 - Click to copy feature
 - Preset/Prompt nicknames
 
-### Usage
+### Installation
 - Install by cloning this repository into ComfyUI/custom_nodes
+- Installation by ComfyUI Manager coming soon
+
+### Usage
 - Click on `+ Preset` or `+ Prompt` to add preset or prompt block
 - Click on **pencil icon** or **double click** textbox to edit prompt
 - **Double click** on titles to edit
@@ -21,3 +24,4 @@ ComfyUI Prompt Bank is a ComfyUI extension to add a prompt bank to the sidebar o
 - [ ] Copy multiple prompts
 - [ ] Search function
 - [ ] Auto-complete
+- [ ] Thumbnails maybe?
