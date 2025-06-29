@@ -70,6 +70,13 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
     deleteBtn.className = 'pi pi-trash';
     deleteBtn.style.color = '#d63820';
 
+    // Paste button
+    const pasteBtn = document.createElement('button');
+    pasteBtn.style.position = 'absolute';
+    pasteBtn.style.top = '5px';
+    pasteBtn.style.right = '80px';  // Adjusted position
+    pasteBtn.className = 'pi pi-clipboard';
+
     // Color change helper
     const matchColor = () => {
         content.style.backgroundColor = content.readOnly ? '#808080' : 'black';
@@ -144,7 +151,30 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
         }
     });
 
-    // Add jump functionality for search results
+    // PASTE FUNCTIONALITY
+    pasteBtn.addEventListener('click', async () => {
+        try {
+            const clipboardText = await navigator.clipboard.readText();
+            content.value = clipboardText;
+            prompt.content = clipboardText;
+            onSave();
+            
+            // Visual feedback
+            content.style.backgroundColor = '#548f64';
+            setTimeout(() => {
+                if (content.readOnly) {
+                    content.style.backgroundColor = '#808080';
+                } else {
+                    content.style.backgroundColor = 'black';
+                }
+            }, 500);
+        } catch (error) {
+            console.error('Failed to read clipboard:', error);
+            alert('Failed to access clipboard. Make sure you have granted permission.');
+        }
+    });
+
+    // Jump functionality for search results
     if (onJump) {
         wrapper.addEventListener('click', (e) => {
             // Only trigger if not clicking on interactive elements
@@ -163,5 +193,6 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
     wrapper.appendChild(content);
     wrapper.appendChild(editBtn);
     wrapper.appendChild(deleteBtn);
+    wrapper.appendChild(pasteBtn);
     parentElement.appendChild(wrapper);
 }
