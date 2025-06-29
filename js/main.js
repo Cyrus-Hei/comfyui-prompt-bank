@@ -31,13 +31,13 @@ app.extensionManager.registerSidebarTab({
 
     // Create "Add Preset" button
     const addPreset = document.createElement('button');
-    addPreset.textContent = 'Add Preset';
+    addPreset.textContent = '+ Preset';
     addPreset.style.marginBottom = '10px';
     container.appendChild(addPreset);
 
     // Create "Add Prompt" button
     const addPrompt = document.createElement('button');
-    addPrompt.textContent = 'Add Prompt';
+    addPrompt.textContent = '+ Prompt';
     addPrompt.style.marginBottom = '10px';
     addPrompt.style.marginLeft = '10px';
     container.appendChild(addPrompt);
