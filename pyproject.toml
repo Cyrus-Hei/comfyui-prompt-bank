@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-prompt-bank"
 description = "A prompt manager on the sidebar for ComfyUI, allowing easy saving and copying of prompts. "
-version = "0.0.1"
+version = "0.0.2"
 license = { file = "LICENSE" }
 
 [project.urls]
