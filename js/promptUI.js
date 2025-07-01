@@ -1,10 +1,14 @@
 export function createPromptElement({ prompt, parentElement, parentData, treeData, getAlertSuppression, onSave, isSearchResult, onJump }) {
+    const blockBgColor= '#007958';
+    const txtBgColor = '#212121';
+    
     const wrapper = document.createElement('div');
     wrapper.className = 'prompt-wrapper';
     wrapper.dataset.id = prompt.id;
     wrapper.style.marginBottom = '0px';
     wrapper.style.border = '1px solid #000';
-    wrapper.style.backgroundColor = '#383838';
+    wrapper.style.backgroundColor = blockBgColor;
+    wrapper.style.opacity = '0.78';
     wrapper.style.padding = '10px';
     wrapper.style.paddingTop = '35px';
     wrapper.style.borderRadius = '5px';
@@ -56,7 +60,7 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
     content.style.maxHeight = '500px';
     content.style.overflowY = 'auto';
     content.readOnly = true;
-    content.style.backgroundColor = '#212121';
+    content.style.backgroundColor = txtBgColor;
     content.style.cursor = 'pointer';
     content.style.borderColor = 'transparent';
 
@@ -99,7 +103,7 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
 
     // Color change helper
     const matchColor = () => {
-        content.style.backgroundColor = content.readOnly ? '#383838' : 'black';
+        content.style.backgroundColor = content.readOnly ? txtBgColor : 'black';
     };
 
     // Event handlers
@@ -187,10 +191,10 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
             onSave();
             
             // Visual feedback
-            content.style.backgroundColor = '#548f64';
+            content.style.backgroundColor = '#9c9c9c';
             setTimeout(() => {
                 if (content.readOnly) {
-                    content.style.backgroundColor = '#383838';
+                    content.style.backgroundColor = txtBgColor;
                 } else {
                     content.style.backgroundColor = 'black';
                 }

@@ -1,10 +1,12 @@
 export function createPresetElement({ preset, parentElement, parentData, childrenContainer, treeData, getAlertSuppression, onSave, onAddChild, isSearchResult, onJump }) {
+    const blockBgColor = '#303030';
+    
     const presetElement = document.createElement('div');
     presetElement.className = 'preset-wrapper';
     presetElement.dataset.id = preset.id;
     presetElement.style.marginBottom = '0px';
     presetElement.style.border = '1px solid #000';
-    presetElement.style.backgroundColor = '#303030';
+    presetElement.style.backgroundColor = blockBgColor;
     presetElement.style.padding = '10px';
     presetElement.style.paddingTop = '35px';
     presetElement.style.paddingRight = '0px';
