@@ -2,9 +2,23 @@ import { app } from "../../scripts/app.js";
 import { TreeData } from "./treeData.js";
 import { TreeRenderer } from "./treeRenderer.js";
 
+const EXTENSION_CSS = `
+button:hover {
+    opacity:0.8;
+}
+
+.pi.pi-clipboard {
+}
+`
+
 app.registerExtension({
     name: "PromptBank.menu",
     async setup(app) {
+        // Inject CSS into the shadow DOM
+        const style = document.createElement('style');
+        style.textContent = EXTENSION_CSS;
+        document.head.appendChild(style);
+
         // Initialize data management
         const treeData = new TreeData();
         treeData.load();
