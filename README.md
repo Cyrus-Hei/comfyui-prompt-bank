@@ -1,6 +1,6 @@
 # ComfyUI Prompt Bank
 
-ComfyUI Prompt Bank is a ComfyUI extension to add a prompt bank to the sidebar of the default frontend, allowing easy storing of prompt presets.
+ComfyUI Prompt Bank is a ComfyUI extension to add a prompt bank to the sidebar of the default frontend, making prompt storing and saving easy.
 
 Save presets for a character, a series, a scenary etc. with ease. Save multiple costumes, hairstyles, or poses for your favourite characters!
 
@@ -15,8 +15,8 @@ Save presets for a character, a series, a scenary etc. with ease. Save multiple 
 - Preset/Prompt Search: find what you need quicker!
 
 ### Installation
-- Install by cloning this repository into ComfyUI/custom_nodes
-- Installation by ComfyUI Manager coming soon
+- Method 1: In ComfyUI Manager -> Custom Nodes Manager, search for comfyui-prompt-bank, click install, restart ComfyUI after installation.
+- Method 2: Install by cloning this repository into ComfyUI/custom_nodes, then restart ComfyUI.
 
 ### Usage
 - Create Presets/Prompts: Click on `+ Preset` or `+ Prompt` to add preset or prompt block

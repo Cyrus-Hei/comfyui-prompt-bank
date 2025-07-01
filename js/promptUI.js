@@ -3,7 +3,8 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
     wrapper.className = 'prompt-wrapper';
     wrapper.dataset.id = prompt.id;
     wrapper.style.marginBottom = '0px';
-    wrapper.style.border = '1px solid #ccc';
+    wrapper.style.border = '1px solid #000';
+    wrapper.style.backgroundColor = '#383838';
     wrapper.style.padding = '10px';
     wrapper.style.paddingTop = '35px';
     wrapper.style.borderRadius = '5px';
@@ -36,12 +37,13 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
         title.style.cursor = 'pointer';
         title.readOnly = true;
         prompt.title = title.value;
+        adjustHeight();
         onSave();
     });
 
     // Exit edit on escape key
     title.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Escape') {
+        if (ev.key === 'Escape' || ev.key === 'Enter') {
             title.blur();
         }
     });
@@ -50,11 +52,28 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
     const content = document.createElement('textarea');
     content.value = prompt.content;
     content.style.width = '100%';
-    content.style.height = '100px';
+    content.style.minHeight = '20px';
+    content.style.maxHeight = '500px';
+    content.style.overflowY = 'auto';
     content.readOnly = true;
-    content.style.backgroundColor = '#383838';
+    content.style.backgroundColor = '#212121';
     content.style.cursor = 'pointer';
     content.style.borderColor = 'transparent';
+
+    // Auto-adjust height function
+    const adjustHeight = () => {
+        content.style.height = 'auto'; // Reset height
+        content.style.height = content.scrollHeight + 'px'; // Set to content height
+    };
+
+    // Adjust height after element is in DOM
+    const resizeObserver = new ResizeObserver(adjustHeight);
+    let adjustTimeout;
+    
+    const scheduleAdjustment = () => {
+        clearTimeout(adjustTimeout);
+        adjustTimeout = setTimeout(adjustHeight, 10);
+    };
 
     // Edit button
     const editBtn = document.createElement('button');
@@ -90,6 +109,9 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
                 content.style.backgroundColor = '#548f64';
                 setTimeout(matchColor, 500);
             });
+        }
+        if (!content.readOnly) {
+            adjustHeight();
         }
     });
 
@@ -132,7 +154,10 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
         matchColor();
         content.style.cursor = content.readOnly ? 'pointer' : 'text';
         editBtn.className = content.readOnly ? 'pi pi-pencil' : 'pi pi-save';
-        if (!content.readOnly) content.focus();
+        if (!content.readOnly) {
+            content.focus();
+            adjustHeight();
+        }
         if (content.readOnly) {
             prompt.content = content.value;
             onSave();
@@ -158,6 +183,7 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
             const clipboardText = await navigator.clipboard.readText();
             content.value = clipboardText;
             prompt.content = clipboardText;
+            adjustHeight();
             onSave();
             
             // Visual feedback
@@ -189,6 +215,8 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
         wrapper.style.backgroundColor = '#2a2a4a';
     }
 
+    content.addEventListener('input', adjustHeight);
+
     // Assemble elements
     wrapper.appendChild(title);
     wrapper.appendChild(content);
@@ -196,4 +224,14 @@ export function createPromptElement({ prompt, parentElement, parentData, treeDat
     wrapper.appendChild(deleteBtn);
     wrapper.appendChild(pasteBtn);
     parentElement.appendChild(wrapper);
+
+    // Observe for DOM changes and initial adjustment
+    resizeObserver.observe(content);
+    scheduleAdjustment();
+
+    // Cleanup on removal
+    wrapper.addEventListener('DOMNodeRemoved', () => {
+        resizeObserver.disconnect();
+        window.removeEventListener('resize', scheduleAdjustment);
+    });
 }

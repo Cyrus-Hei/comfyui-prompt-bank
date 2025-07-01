@@ -3,7 +3,8 @@ export function createPresetElement({ preset, parentElement, parentData, childre
     presetElement.className = 'preset-wrapper';
     presetElement.dataset.id = preset.id;
     presetElement.style.marginBottom = '0px';
-    presetElement.style.border = '1px solid #ccc';
+    presetElement.style.border = '1px solid #000';
+    presetElement.style.backgroundColor = '#303030';
     presetElement.style.padding = '10px';
     presetElement.style.paddingTop = '35px';
     presetElement.style.paddingRight = '0px';
@@ -43,7 +44,7 @@ export function createPresetElement({ preset, parentElement, parentData, childre
 
     // Exit edit on escape key
     title.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Escape') {
+        if (ev.key === 'Escape' || ev.key === 'Enter') {
             title.blur();
         }
     });
