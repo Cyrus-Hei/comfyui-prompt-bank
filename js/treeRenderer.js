@@ -186,7 +186,7 @@ export class TreeRenderer {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     element.style.backgroundColor = '#3a3a6a';
                     setTimeout(() => {
-                        element.style.backgroundColor = '';
+                        element.style.backgroundColor = '#303030';
                     }, 3000);
                 }
                 this.focusNodeId = null;
